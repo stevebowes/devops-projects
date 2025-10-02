@@ -41,6 +41,9 @@ Thumbs.db
 # Internal workflow documentation (not ready for public)
 00-GETTING-STARTED/
 
+# Documentation files (keep private for now)
+*.md
+
 # Helm
 **/.helm/
 **/charts/*.tgz
