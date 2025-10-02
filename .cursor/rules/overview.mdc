@@ -1,8 +1,0 @@
----
-description:
-globs:
-alwaysApply: true
----
-This is a mono-repo GitHub project containing 5 sequential DevOps projects (EKS cluster → Helm/GitOps → CI/CD → Monitoring → Logging) where each project builds on the previous one's infrastructure, with pre-created configuration files and step-by-step deployment guides that combine imperative commands and declarative manifests to create a production-ready Kubernetes environment.
-
-Before implementing changes, ask me any questions needed to fully understand the task and clarify ambiguities. Present quesions as simple yes/no questions or, if multiple choices exist, as clear option sets (A, B, C, etc.) for me to pick from.
