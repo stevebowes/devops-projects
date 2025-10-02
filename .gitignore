@@ -21,6 +21,7 @@
 # IDE
 .vscode/
 .idea/
+.cursor/
 *.swp
 *.swo
 *~
@@ -36,6 +37,9 @@ Thumbs.db
 **/notes.txt
 **/scratch/
 **/CURRENT-STATE-CHECKLIST.md
+
+# Internal workflow documentation (not ready for public)
+00-GETTING-STARTED/
 
 # Helm
 **/.helm/
