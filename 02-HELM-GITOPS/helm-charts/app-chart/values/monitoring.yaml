@@ -1,0 +1,34 @@
+# Monitoring environment overrides
+# NOTE: This file is mentioned in the guide structure but content not provided
+# Placeholder values for monitoring-specific configuration
+
+replicaCount: 1
+
+image:
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+
+resources:
+  limits:
+    cpu: "1"
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+# Disable HPA in monitoring
+autoscaling:
+  enabled: false
+
+# Disable PDB in monitoring
+podDisruptionBudget:
+  enabled: false
+
+# Monitoring environment variables
+env:
+  - name: ENVIRONMENT
+    value: "monitoring"
+  - name: LOG_LEVEL
+    value: "info"

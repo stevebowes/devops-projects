@@ -1,0 +1,29 @@
+# External Secrets Operator Installation Commands
+# NOTE: This file contains the installation commands from the guide
+# These are shell commands, not Kubernetes YAML manifests
+
+# Add External Secrets Helm repository
+# helm repo add external-secrets https://charts.external-secrets.io
+# helm repo update
+
+# Install External Secrets Operator
+# helm install external-secrets external-secrets/external-secrets -n monitoring --create-namespace --set installCRDs=true --wait
+
+# Verify installation
+# kubectl get pods -n monitoring -l app.kubernetes.io/name=external-secrets
+
+# Create sample secrets in AWS Secrets Manager
+# aws secretsmanager create-secret --name dev/app/config --description "Development application configuration" --secret-string '{"DATABASE_URL":"postgresql://localhost:5432/devdb","API_KEY":"dev-api-key-12345"}'
+# aws secretsmanager create-secret --name prod/app/config --description "Production application configuration" --secret-string '{"DATABASE_URL":"postgresql://prod-db:5432/proddb","API_KEY":"prod-api-key-67890"}'
+
+# Create IAM policy for External Secrets (see guide for policy JSON)
+# aws iam create-policy --policy-name EKSExternalSecretsPolicy --policy-document file:///tmp/external-secrets-policy.json
+
+# Create IRSA for External Secrets Operator
+# CLUSTER_NAME="your-eks-cluster"  # Replace with your actual cluster name
+# AWS_REGION="your-region"  # Replace with your region
+# AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+# eksctl create iamserviceaccount --cluster=${CLUSTER_NAME} --namespace=monitoring --name=external-secrets --attach-policy-arn=arn:aws:iam::${AWS_ACCOUNT_ID}:policy/EKSExternalSecretsPolicy --override-existing-serviceaccounts --approve
+
+# Update External Secrets to use the service account
+# helm upgrade external-secrets external-secrets/external-secrets -n monitoring --set serviceAccount.create=false --set serviceAccount.name=external-secrets --reuse-values

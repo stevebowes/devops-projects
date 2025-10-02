@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: logging
+  labels:
+    name: logging
+    environment: shared
+    # Pod Security Standards - Baseline (for log processing)
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/enforce-version: latest
+    pod-security.kubernetes.io/warn: baseline
+    pod-security.kubernetes.io/warn-version: latest
+    pod-security.kubernetes.io/audit: baseline
+    pod-security.kubernetes.io/audit-version: latest
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: logging-resource-quota
+  namespace: logging
+spec:
+  hard:
+    requests.cpu: "15"
+    requests.memory: 30Gi
+    limits.cpu: "15"
+    limits.memory: 30Gi
+    pods: "75"
+    services: "15"
+    persistentvolumeclaims: "15"
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: logging-limit-range
+  namespace: logging
+spec:
+  limits:
+  - max:
+      cpu: "4"
+      memory: 8Gi
+    min:
+      cpu: 100m
+      memory: 128Mi
+    default:
+      cpu: "1"
+      memory: 2Gi
+    defaultRequest:
+      cpu: 500m
+      memory: 1Gi
+    type: Container

@@ -1,0 +1,46 @@
+# Terraform
+**/.terraform/
+**/*.tfstate
+**/*.tfstate.backup
+**/.terraform.lock.hcl
+**/terraform.tfvars.backup
+
+# Kubernetes
+**/kubeconfig
+**/.kube/
+
+# Environment files
+**/.env
+**/.env.local
+
+# Secrets (never commit)
+**/secrets.yaml
+**/credentials.json
+**/*-secrets.yaml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Testing artifacts (local only)
+**/testing-checklist.md
+**/TESTING-NOTES.md
+**/notes.txt
+**/scratch/
+**/CURRENT-STATE-CHECKLIST.md
+
+# Helm
+**/.helm/
+**/charts/*.tgz
+
+# Build artifacts
+**/dist/
+**/build/

@@ -1,0 +1,32 @@
+# ArgoCD Installation Commands using Helm
+# This is the recommended approach for production deployments
+
+# Add ArgoCD Helm repository
+# helm repo add argo https://argoproj.github.io/argo-helm
+# helm repo update
+
+# Install ArgoCD using Helm
+# helm install argocd argo/argo-cd \
+#   --namespace argocd \
+#   --create-namespace \
+#   --values values.yaml \
+#   --wait
+
+# Get initial admin password
+# kubectl -n argocd get secret argocd-initial-admin-secret \
+#   -o jsonpath="{.data.password}" | base64 -d
+
+# Port forward to access ArgoCD UI
+# kubectl port-forward svc/argocd-server -n argocd 8080:80
+
+# Access ArgoCD UI at: http://localhost:8080
+# Username: admin
+# Password: (from the command above)
+
+# Optional: Install ArgoCD CLI
+# Linux: curl -sSL -o /tmp/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+# macOS: brew install argocd
+# chmod +x /tmp/argocd && sudo mv /tmp/argocd /usr/local/bin/argocd
+
+# Login via CLI
+# argocd login localhost:8080 --username admin --password <your-password> --insecure

@@ -1,0 +1,159 @@
+# ArgoCD Helm Chart Values
+# This file configures ArgoCD for the DevOps project
+
+# Global configuration
+global:
+  domain: argocd.local
+  image:
+    repository: quay.io/argoproj/argocd
+    tag: "v2.12.0"
+    imagePullPolicy: IfNotPresent
+
+# Server configuration
+server:
+  # Enable insecure mode for local development
+  insecure: true
+  
+  # Resource limits
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  
+  # Service configuration
+  service:
+    type: ClusterIP
+    port: 80
+    portName: http
+    annotations: {}
+  
+  # Ingress configuration (disabled - using port-forward)
+  ingress:
+    enabled: false
+
+# Controller configuration
+controller:
+  # Resource limits
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+
+# Repository server configuration
+repoServer:
+  # Resource limits
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+
+# Application set controller
+applicationSet:
+  enabled: true
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+# Redis configuration
+redis:
+  enabled: true
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+# Dex configuration (disabled for simplicity)
+dex:
+  enabled: false
+
+# Notifications controller
+notifications:
+  enabled: false
+
+# Config management
+configs:
+  # Default repositories (empty for this project)
+  repositories: {}
+  
+  # Server parameters
+  params:
+    server.insecure: "true"
+  
+  # Default project
+  cm:
+    # Repository credentials (empty for public repos)
+    repositories: |
+      - type: git
+        url: https://github.com/YOUR_USERNAME/DEVOPS_PROJECTS.git
+        name: devops-projects
+    
+    # Application instance label key
+    application.instanceLabelKey: argocd.argoproj.io/instance
+  
+
+# Security context
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 999
+  fsGroup: 999
+
+# Pod security context
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 999
+  fsGroup: 999
+  seccompProfile:
+    type: RuntimeDefault
+
+# Service account
+serviceAccount:
+  create: true
+  name: argocd-server
+  annotations: {}
+
+# RBAC
+rbac:
+  create: true
+  policy.default: role:readonly
+  policy.csv: |
+    p, role:admin, applications, *, */*, allow
+    p, role:admin, clusters, *, *, allow
+    p, role:admin, repositories, *, *, allow
+    p, role:admin, certificates, *, *, allow
+    p, role:admin, projects, *, *, allow
+    p, role:admin, accounts, *, *, allow
+    p, role:admin, gpgkeys, *, *, allow
+    p, role:admin, logs, *, *, allow
+    p, role:admin, exec, *, *, allow
+    p, role:admin, logs, *, *, allow
+    p, role:admin, exec, *, *, allow
+    g, argocd-admins, role:admin
+
+# Network policies (disabled for simplicity)
+networkPolicy:
+  enabled: false
+
+# Pod disruption budget
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+# Monitoring (disabled for this project)
+monitoring:
+  enabled: false
