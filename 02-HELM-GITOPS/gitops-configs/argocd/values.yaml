@@ -100,7 +100,7 @@ configs:
     # Repository credentials (empty for public repos)
     repositories: |
       - type: git
-        url: https://github.com/YOUR_USERNAME/DEVOPS_PROJECTS.git
+        url: https://github.com/stevebowes/devops-projects.git
         name: devops-projects
     
     # Application instance label key

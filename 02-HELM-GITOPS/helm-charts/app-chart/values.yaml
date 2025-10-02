@@ -125,12 +125,20 @@ volumeMounts:
     mountPath: /tmp
   - name: run
     mountPath: /var/run
+  - name: nginx-cache
+    mountPath: /var/cache/nginx
+  - name: nginx-tmp
+    mountPath: /var/tmp
 
 # Volumes
 volumes:
   - name: cache
     emptyDir: {}
   - name: run
+    emptyDir: {}
+  - name: nginx-cache
+    emptyDir: {}
+  - name: nginx-tmp
     emptyDir: {}
 
 # Liveness probe

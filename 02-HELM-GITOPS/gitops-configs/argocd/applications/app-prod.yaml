@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/YOUR_USERNAME/DEVOPS_PROJECTS.git
+    repoURL: https://github.com/stevebowes/devops-projects.git
     targetRevision: main
-    path: 02-HELM-GITOPS/gitops-repo/helm-charts/app-chart  # Path within mono-repo
+    path: 02-HELM-GITOPS/helm-charts/app-chart  # Path within mono-repo
     helm:
       valueFiles:
         - values/prod.yaml
