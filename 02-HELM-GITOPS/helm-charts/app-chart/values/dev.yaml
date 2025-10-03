@@ -48,3 +48,8 @@ env:
     value: "development"
   - name: LOG_LEVEL
     value: "debug"
+
+# Enable secrets in development
+secrets:
+  enabled: true
+  name: "app-config"

@@ -54,6 +54,11 @@ env:
   - name: LOG_LEVEL
     value: "info"
 
+# Enable secrets in production
+secrets:
+  enabled: true
+  name: "app-config"
+
 # Anti-affinity to spread pods across nodes
 affinity:
   podAntiAffinity:

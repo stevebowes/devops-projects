@@ -119,6 +119,11 @@ affinity: {}
 # Environment variables
 env: []
 
+# Secrets configuration
+secrets:
+  enabled: false  # Set to true to enable secret injection
+  name: "app-config"  # Name of the Kubernetes secret created by External Secrets Operator
+
 # Volume mounts for writable directories
 volumeMounts:
   - name: cache
