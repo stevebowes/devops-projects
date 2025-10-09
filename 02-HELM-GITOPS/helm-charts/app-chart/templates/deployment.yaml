@@ -45,21 +45,23 @@ spec:
         {{- end }}
         resources:
           {{- toYaml .Values.resources | nindent 12 }}
+        {{- if or .Values.env .Values.secrets.enabled }}
         env:
         {{- with .Values.env }}
           {{- toYaml . | nindent 12 }}
         {{- end }}
         {{- if .Values.secrets.enabled }}
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.secrets.name | default "app-config" }}
-              key: DATABASE_URL
-        - name: API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.secrets.name | default "app-config" }}
-              key: API_KEY
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.name | default "app-config" }}
+                  key: DATABASE_URL
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.name | default "app-config" }}
+                  key: API_KEY
+        {{- end }}
         {{- end }}
         {{- with .Values.volumeMounts }}
         volumeMounts:
@@ -69,15 +71,15 @@ spec:
       volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.nodeSelector }}
+      {{- if .Values.nodeSelector }}
       nodeSelector:
-        {{- toYaml . | nindent 8 }}
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
+      {{- if .Values.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
+        {{- toYaml .Values.affinity | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- if .Values.tolerations }}
       tolerations:
-        {{- toYaml . | nindent 8 }}
+        {{- toYaml .Values.tolerations | nindent 8 }}
       {{- end }}
