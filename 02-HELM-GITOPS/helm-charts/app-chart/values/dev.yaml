@@ -1,6 +1,6 @@
 # Development environment overrides
 
-replicaCount: 2 # Change this number to test GitOps deployment
+replicaCount: 4 # Change this number to test GitOps deployment
 
 image:
   pullPolicy: Always  # Always pull latest dev images
