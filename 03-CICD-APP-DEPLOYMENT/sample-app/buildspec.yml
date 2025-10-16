@@ -49,13 +49,20 @@ phases:
       - echo ""
       - echo "Updating Helm values with new image tag..."
       - |
-        # Update cicd-dev values
-        sed -i "s|tag: \".*\"|tag: \"$IMAGE_TAG\"|g" 02-HELM-GITOPS/helm-charts/app-chart/values/cicd-dev.yaml
+        # Update CI/CD development values (nodejs-chart)
+        sed -i "s|tag: \".*\"|tag: \"$IMAGE_TAG\"|g" 02-HELM-GITOPS/helm-charts/nodejs-chart/values/dev.yaml
         
-        # Update cicd-prod values (optional - for auto-deploy to prod)
-        # sed -i "s|tag: \".*\"|tag: \"$IMAGE_TAG\"|g" 02-HELM-GITOPS/helm-charts/app-chart/values/cicd-prod.yaml
+        # Update CI/CD production values (optional - for auto-deploy to prod)
+        # sed -i "s|tag: \".*\"|tag: \"$IMAGE_TAG\"|g" 02-HELM-GITOPS/helm-charts/nodejs-chart/values/prod.yaml
         
         echo "Helm values updated with tag: $IMAGE_TAG"
+        
+        # Commit and push the updated values to trigger ArgoCD sync
+        git config --global user.email "codebuild@example.com"
+        git config --global user.name "AWS CodeBuild"
+        git add 02-HELM-GITOPS/helm-charts/nodejs-chart/values/dev.yaml
+        git commit -m "Update CI/CD image tag to $IMAGE_TAG for app-cicd-dev deployment"
+        git push origin main
 
 artifacts:
   files:
