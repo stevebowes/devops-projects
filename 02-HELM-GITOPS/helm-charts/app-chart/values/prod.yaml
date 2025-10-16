@@ -1,6 +1,6 @@
 # Production environment overrides
 
-replicaCount: 3
+replicaCount: 1
 
 image:
   pullPolicy: IfNotPresent  # Use stable, tagged images
