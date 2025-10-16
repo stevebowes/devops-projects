@@ -11,7 +11,7 @@ spec:
     path: 02-HELM-GITOPS/helm-charts/nodejs-chart
     helm:
       valueFiles:
-        - values/cicd-prod.yaml  # ← NEW VALUES FILE
+        - values/prod.yaml  # ← SAME AS nginx-chart, BUT DIFFERENT CHART
   destination:
     server: https://kubernetes.default.svc
     namespace: production
