@@ -22,7 +22,7 @@ resource "aws_cloudwatch_log_group" "codebuild_sample_app" {
 resource "aws_codebuild_project" "sample_app" {
   name          = "${local.cluster_name}-sample-app-build"
   description   = "Build project for sample application"
-  service_role  = module.codebuild_role.iam_role_arn
+  service_role  = aws_iam_role.codebuild_role.arn
   build_timeout = 30  # minutes
 
   artifacts {
@@ -98,9 +98,19 @@ resource "aws_codebuild_project" "sample_app" {
 
   depends_on = [
     aws_ecr_repository.sample_app,
-    module.codebuild_role,
+    aws_iam_role.codebuild_role,
     aws_cloudwatch_log_group.codebuild_sample_app
   ]
+}
+
+###############################################################################
+# CodeBuild Source Credential (GitHub Personal Access Token)
+###############################################################################
+
+resource "aws_codebuild_source_credential" "github" {
+  auth_type   = "PERSONAL_ACCESS_TOKEN"
+  server_type = "GITHUB"
+  token       = var.github_token
 }
 
 ###############################################################################
@@ -127,5 +137,8 @@ resource "aws_codebuild_webhook" "sample_app" {
     }
   }
 
-  depends_on = [aws_codebuild_project.sample_app]
+  depends_on = [
+    aws_codebuild_project.sample_app,
+    aws_codebuild_source_credential.github
+  ]
 }

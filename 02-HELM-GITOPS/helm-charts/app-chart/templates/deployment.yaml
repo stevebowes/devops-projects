@@ -61,6 +61,16 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.secrets.name | default "app-config" }}
                   key: API_KEY
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.name | default "app-config" }}
+                  key: JWT_SECRET
+            - name: LOG_LEVEL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.name | default "app-config" }}
+                  key: LOG_LEVEL
         {{- end }}
         {{- end }}
         {{- with .Values.volumeMounts }}

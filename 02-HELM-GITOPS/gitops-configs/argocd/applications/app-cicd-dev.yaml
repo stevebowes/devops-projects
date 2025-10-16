@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-cicd-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/stevebowes/devops-projects.git
+    targetRevision: main
+    path: 02-HELM-GITOPS/helm-charts/app-chart
+    helm:
+      valueFiles:
+        - values/cicd-dev.yaml  # ← NEW VALUES FILE
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: development
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

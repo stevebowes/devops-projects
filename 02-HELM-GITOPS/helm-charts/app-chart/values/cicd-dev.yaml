@@ -1,0 +1,64 @@
+# CI/CD Development environment overrides
+replicaCount: 1
+
+image:
+  repository: 570093939044.dkr.ecr.us-east-1.amazonaws.com/eks-cluster-sample-app
+  tag: "latest"  # Will be updated by CI/CD pipeline
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000  # Node.js app port
+
+resources:
+  limits:
+    cpu: "1"
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+# Enable secrets for CI/CD app
+secrets:
+  enabled: true  # ← ENABLE SECRETS
+  name: "app-config"
+
+# Development environment variables
+env:
+  - name: ENVIRONMENT
+    value: "development"
+  - name: NODE_ENV
+    value: "development"
+  - name: PORT
+    value: "3000"
+
+# Disable HPA in development
+autoscaling:
+  enabled: false
+
+# Disable PDB in development
+podDisruptionBudget:
+  enabled: false
+
+# Security context (updated for distroless image)
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65532  # ← FIXED: distroless nonroot user
+  runAsGroup: 65532
+  fsGroup: 65532
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 65532  # ← FIXED: distroless nonroot user
+
+# ECR image pull secret
+imagePullSecrets:
+  - name: ecr-secret

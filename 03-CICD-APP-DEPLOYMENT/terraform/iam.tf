@@ -2,21 +2,23 @@
 # IAM Role for CodeBuild
 ###############################################################################
 
-module "codebuild_role" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
-  version = "~> 5.0"
-  
-  create_role = true
-  role_name   = "${local.cluster_name}-codebuild-role"
-  
-  trusted_role_services = [
-    "codebuild.amazonaws.com"
-  ]
-  
-  custom_role_policy_arns = [
-    "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
-  ]
-  
+# Create IAM role for CodeBuild with proper trust policy
+resource "aws_iam_role" "codebuild_role" {
+  name = "${local.cluster_name}-codebuild-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "codebuild.amazonaws.com"
+        }
+      }
+    ]
+  })
+
   tags = merge(
     var.tags,
     {
@@ -26,13 +28,19 @@ module "codebuild_role" {
   )
 }
 
+# Attach CloudWatch Logs policy
+resource "aws_iam_role_policy_attachment" "codebuild_cloudwatch" {
+  role       = aws_iam_role.codebuild_role.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+}
+
 ###############################################################################
 # IAM Policy for ECR and S3 Access
 ###############################################################################
 
 resource "aws_iam_role_policy" "codebuild_ecr_s3" {
   name = "${local.cluster_name}-codebuild-ecr-s3-policy"
-  role = module.codebuild_role.iam_role_name
+  role = aws_iam_role.codebuild_role.name
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -64,7 +72,7 @@ resource "aws_iam_role_policy" "codebuild_ecr_s3" {
           module.codebuild_cache_bucket.s3_bucket_arn,
           "${module.codebuild_cache_bucket.s3_bucket_arn}/*"
         ]
-      }
+      },
     ]
   })
 }

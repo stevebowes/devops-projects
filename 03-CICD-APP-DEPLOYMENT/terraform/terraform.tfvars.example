@@ -10,6 +10,11 @@ eks_tfstate_key    = "eks-poc/dev/terraform.tfstate"
 # Your GitHub repository URL
 github_repo_url = "https://github.com/YOUR_USERNAME/devops-projects.git"
 
+# GitHub Personal Access Token for webhook creation
+# Get from: GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
+# Required permissions: repo (Full control of private repositories)
+github_token = "ghp_your_github_personal_access_token_here"
+
 tags = {
   Project     = "project-3-cicd"
   Environment = "development"

@@ -22,7 +22,8 @@ resource "aws_iam_policy" "external_secrets" {
         Resource = [
           # These will be updated in Project 3 when app secrets are created
           "arn:aws:secretsmanager:${var.aws_region}:${data.aws_caller_identity.current.account_id}:secret:dev/app/config*",
-          "arn:aws:secretsmanager:${var.aws_region}:${data.aws_caller_identity.current.account_id}:secret:prod/app/config*"
+          "arn:aws:secretsmanager:${var.aws_region}:${data.aws_caller_identity.current.account_id}:secret:prod/app/config*",
+          "arn:aws:secretsmanager:${var.aws_region}:${data.aws_caller_identity.current.account_id}:secret:ecr/credentials*"
         ]
       }
     ]

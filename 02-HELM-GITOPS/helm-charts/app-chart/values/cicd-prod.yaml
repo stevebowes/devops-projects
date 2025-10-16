@@ -1,0 +1,82 @@
+# CI/CD Production environment overrides
+replicaCount: 1
+
+image:
+  repository: 570093939044.dkr.ecr.us-east-1.amazonaws.com/eks-cluster-sample-app
+  tag: "latest"  # Will be updated by CI/CD pipeline
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 3000  # Node.js app port
+
+resources:
+  limits:
+    cpu: "1"
+    memory: 2Gi
+  requests:
+    cpu: 500m
+    memory: 1Gi
+
+# Enable secrets for CI/CD app
+secrets:
+  enabled: true  # ← ENABLE SECRETS
+  name: "app-config"
+
+# Production environment variables
+env:
+  - name: ENVIRONMENT
+    value: "production"
+  - name: NODE_ENV
+    value: "production"
+  - name: PORT
+    value: "3000"
+
+# Enable HPA in production
+autoscaling:
+  enabled: false  # Can enable later
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+# Enable PDB in production
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+# Strict security context for production (updated for distroless image)
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65532  # ← FIXED: distroless nonroot user
+  runAsGroup: 65532
+  fsGroup: 65532
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 65532  # ← FIXED: distroless nonroot user
+
+# Anti-affinity to spread pods across nodes
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+          - key: app.kubernetes.io/name
+            operator: In
+            values:
+            - app-chart
+        topologyKey: kubernetes.io/hostname
+
+# ECR image pull secret
+imagePullSecrets:
+  - name: ecr-secret

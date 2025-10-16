@@ -22,6 +22,13 @@ variable "github_repo_url" {
   # Example: "https://github.com/username/devops-projects.git"
 }
 
+variable "github_token" {
+  description = "GitHub Personal Access Token for webhook creation"
+  type        = string
+  sensitive   = true
+  # Get from: GitHub → Settings → Developer settings → Personal access tokens
+}
+
 variable "tags" {
   description = "Common tags for all resources"
   type        = map(string)

@@ -33,13 +33,14 @@ output "codebuild_project_arn" {
 
 output "codebuild_role_arn" {
   description = "CodeBuild IAM role ARN"
-  value       = module.codebuild_role.iam_role_arn
+  value       = aws_iam_role.codebuild_role.arn
 }
 
 output "codebuild_webhook_url" {
   description = "CodeBuild webhook URL for GitHub"
   value       = aws_codebuild_webhook.sample_app.payload_url
 }
+
 
 ###############################################################################
 # S3 Outputs
@@ -105,4 +106,9 @@ output "prod_jwt_secret" {
   description = "Production JWT secret (sensitive)"
   value       = random_password.prod_jwt_secret.result
   sensitive   = true
+}
+
+output "ecr_credentials_secret_arn" {
+  description = "ECR credentials secret ARN"
+  value       = aws_secretsmanager_secret.ecr_credentials.arn
 }
