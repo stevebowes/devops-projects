@@ -1,0 +1,17 @@
+# Copy this file to terraform.tfvars and update with your actual values
+# terraform.tfvars is in .gitignore and should not be committed
+
+aws_region = "us-east-1"
+
+# Get this from Project 1 environment variables
+eks_tfstate_bucket = "YOUR_EKS_TFSTATE_BUCKET_NAME"  # Replace with actual bucket
+eks_tfstate_key    = "eks-poc/dev/terraform.tfstate"
+
+# Your GitHub repository URL
+github_repo_url = "https://github.com/YOUR_USERNAME/devops-projects.git"
+
+tags = {
+  Project     = "project-3-cicd"
+  Environment = "development"
+  ManagedBy   = "terraform"
+}

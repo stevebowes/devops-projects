@@ -1,0 +1,56 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_REPOSITORY_URI
+      - echo Installing Trivy for security scanning...
+      - |
+        wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | apt-key add -
+        echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | tee -a /etc/apt/sources.list.d/trivy.list
+        apt-get update
+        apt-get install -y trivy
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=${IMAGE_TAG:-$COMMIT_HASH}
+      - echo Build started on `date`
+      - echo Building Docker image with tag $IMAGE_TAG...
+
+  build:
+    commands:
+      - echo Building the Docker image...
+      - cd 03-CICD-APP-DEPLOYMENT/sample-app
+      - docker build -t $ECR_REPOSITORY_URI:latest .
+      - docker tag $ECR_REPOSITORY_URI:latest $ECR_REPOSITORY_URI:$IMAGE_TAG
+      - docker tag $ECR_REPOSITORY_URI:latest $ECR_REPOSITORY_URI:$COMMIT_HASH
+
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Scanning image for vulnerabilities...
+      - |
+        trivy image --severity HIGH,CRITICAL --exit-code 1 $ECR_REPOSITORY_URI:$IMAGE_TAG || {
+          echo "Security scan found HIGH or CRITICAL vulnerabilities!"
+          echo "Build will fail. Review vulnerabilities and fix before deploying."
+          exit 1
+        }
+      - echo Security scan passed!
+      - echo Pushing Docker images to ECR...
+      - docker push $ECR_REPOSITORY_URI:latest
+      - docker push $ECR_REPOSITORY_URI:$IMAGE_TAG
+      - docker push $ECR_REPOSITORY_URI:$COMMIT_HASH
+      - echo Docker images pushed successfully
+      - echo Writing image definitions file...
+      - printf '[{"name":"sample-app","imageUri":"%s"}]' $ECR_REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+      - echo "Build complete! Image pushed with tags:"
+      - echo "  - latest"
+      - echo "  - $IMAGE_TAG"
+      - echo "  - $COMMIT_HASH"
+      - echo ""
+      - echo "To deploy to development, update helm-charts/app-chart/values/dev.yaml:"
+      - echo "  image:"
+      - echo "    tag: \"$IMAGE_TAG\""
+
+artifacts:
+  files:
+    - imagedefinitions.json

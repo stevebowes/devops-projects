@@ -49,7 +49,7 @@ env:
   - name: LOG_LEVEL
     value: "debug"
 
-# Enable secrets in development
+# Disable secrets in development (will be enabled in Project 3)
 secrets:
-  enabled: true
+  enabled: false
   name: "app-config"

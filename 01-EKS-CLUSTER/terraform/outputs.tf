@@ -95,28 +95,8 @@ output "aws_account_id" {
 }
 
 # ===================================
-# Secrets Manager Outputs
+# External Secrets IAM Outputs
 # ===================================
-
-output "dev_secret_arn" {
-  description = "ARN of the development secret in AWS Secrets Manager"
-  value       = aws_secretsmanager_secret.dev_app_config.arn
-}
-
-output "dev_secret_name" {
-  description = "Name of the development secret"
-  value       = aws_secretsmanager_secret.dev_app_config.name
-}
-
-output "prod_secret_arn" {
-  description = "ARN of the production secret in AWS Secrets Manager"
-  value       = aws_secretsmanager_secret.prod_app_config.arn
-}
-
-output "prod_secret_name" {
-  description = "Name of the production secret"
-  value       = aws_secretsmanager_secret.prod_app_config.name
-}
 
 output "external_secrets_policy_arn" {
   description = "ARN of the IAM policy for External Secrets Operator"

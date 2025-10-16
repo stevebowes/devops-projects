@@ -54,9 +54,9 @@ env:
   - name: LOG_LEVEL
     value: "info"
 
-# Enable secrets in production
+# Disable secrets in production (will be enabled in Project 3)
 secrets:
-  enabled: true
+  enabled: false
   name: "app-config"
 
 # Anti-affinity to spread pods across nodes

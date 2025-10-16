@@ -1,46 +1,15 @@
-# AWS Secrets Manager resources for External Secrets Operator
-# These secrets will be used by applications in Project 2
-
-# Development environment secret
-resource "aws_secretsmanager_secret" "dev_app_config" {
-  name        = "dev/app/config"
-  description = "Development application configuration"
-  
-  recovery_window_in_days = 0  # Immediate deletion for dev/test
-  
-  tags = merge(
-    var.tags,
-    {
-      Environment = "development"
-      Application = "sample-app"
-      ManagedBy   = "terraform"
-    }
-  )
-}
-
-# Production environment secret
-resource "aws_secretsmanager_secret" "prod_app_config" {
-  name        = "prod/app/config"
-  description = "Production application configuration"
-  
-  recovery_window_in_days = 7  # 7-day recovery window for production
-  
-  tags = merge(
-    var.tags,
-    {
-      Environment = "production"
-      Application = "sample-app"
-      ManagedBy   = "terraform"
-    }
-  )
-}
+# IAM resources for External Secrets Operator
+# These resources will be used by External Secrets Operator in Project 2
+# to access application secrets that will be created in Project 3
 
 # IAM policy for External Secrets Operator
+# Note: This policy will be updated in Project 3 to include the actual secret ARNs
 resource "aws_iam_policy" "external_secrets" {
   name        = "${var.cluster_name}-external-secrets-policy"
   description = "Policy for External Secrets Operator to read application secrets"
   path        = "/"
   
+  # Initial policy - will be updated when secrets are created in Project 3
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -51,8 +20,9 @@ resource "aws_iam_policy" "external_secrets" {
           "secretsmanager:DescribeSecret"
         ]
         Resource = [
-          aws_secretsmanager_secret.dev_app_config.arn,
-          aws_secretsmanager_secret.prod_app_config.arn
+          # These will be updated in Project 3 when app secrets are created
+          "arn:aws:secretsmanager:${var.aws_region}:${data.aws_caller_identity.current.account_id}:secret:dev/app/config*",
+          "arn:aws:secretsmanager:${var.aws_region}:${data.aws_caller_identity.current.account_id}:secret:prod/app/config*"
         ]
       }
     ]
