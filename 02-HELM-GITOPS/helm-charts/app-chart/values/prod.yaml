@@ -10,10 +10,10 @@ service:
 
 resources:
   limits:
-    cpu: "2"
+    cpu: "1"
     memory: 2Gi
   requests:
-    cpu: "1"
+    cpu: 500m
     memory: 1Gi
 
 # Enable HPA in production
