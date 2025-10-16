@@ -18,6 +18,8 @@
 **/secrets.yaml
 **/credentials.json
 **/*-secrets.yaml
+**/secrets.tf
+**/secrets-*.tf
 
 # IDE
 .vscode/
