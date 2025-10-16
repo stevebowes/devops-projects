@@ -97,9 +97,26 @@ env:
   - name: LOG_LEVEL
     value: "info"
 
-# Additional volumes
-volumes: []
-volumeMounts: []
+# Additional volumes for nginx read-only filesystem
+volumes:
+  - name: tmp
+    emptyDir: {}
+  - name: nginx-cache
+    emptyDir: {}
+  - name: nginx-tmp
+    emptyDir: {}
+  - name: run
+    emptyDir: {}
+
+volumeMounts:
+  - name: tmp
+    mountPath: /tmp
+  - name: nginx-cache
+    mountPath: /var/cache/nginx
+  - name: nginx-tmp
+    mountPath: /var/tmp
+  - name: run
+    mountPath: /var/run
 
 nodeSelector: {}
 tolerations: []
