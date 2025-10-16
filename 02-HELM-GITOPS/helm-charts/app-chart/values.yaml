@@ -39,7 +39,7 @@ securityContext:
 service:
   type: ClusterIP
   port: 80
-  targetPort: 8080
+  targetPort: 3000
 
 ingress:
   enabled: false
@@ -149,8 +149,8 @@ volumes:
 # Liveness probe
 livenessProbe:
   httpGet:
-    path: /
-    port: 8080
+    path: /health
+    port: 3000
   initialDelaySeconds: 30
   periodSeconds: 10
   timeoutSeconds: 5
@@ -159,8 +159,8 @@ livenessProbe:
 # Readiness probe
 readinessProbe:
   httpGet:
-    path: /
-    port: 8080
+    path: /health
+    port: 3000
   initialDelaySeconds: 10
   periodSeconds: 5
   timeoutSeconds: 3

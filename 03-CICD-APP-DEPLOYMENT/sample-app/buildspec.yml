@@ -47,9 +47,15 @@ phases:
       - echo "  - $IMAGE_TAG"
       - echo "  - $COMMIT_HASH"
       - echo ""
-      - echo "To deploy to development, update helm-charts/app-chart/values/dev.yaml:"
-      - echo "  image:"
-      - echo "    tag: \"$IMAGE_TAG\""
+      - echo "Updating Helm values with new image tag..."
+      - |
+        # Update cicd-dev values
+        sed -i "s|tag: \".*\"|tag: \"$IMAGE_TAG\"|g" 02-HELM-GITOPS/helm-charts/app-chart/values/cicd-dev.yaml
+        
+        # Update cicd-prod values (optional - for auto-deploy to prod)
+        # sed -i "s|tag: \".*\"|tag: \"$IMAGE_TAG\"|g" 02-HELM-GITOPS/helm-charts/app-chart/values/cicd-prod.yaml
+        
+        echo "Helm values updated with tag: $IMAGE_TAG"
 
 artifacts:
   files:
