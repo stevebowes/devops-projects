@@ -56,10 +56,14 @@ app.get('/', (req, res) => {
 // Simple status endpoint
 app.get('/api/status', (req, res) => {
   res.json({
-    message: 'Sample app is running',
+    message: 'Sample app is running - Build triggered!',
     timestamp: new Date().toISOString(),
     environment: config.env,
-    hasSecrets: !!(config.databaseUrl && config.apiKey)
+    hasSecrets: !!(config.databaseUrl && config.apiKey),
+    buildInfo: {
+      version: '1.0.1',
+      buildDate: new Date().toISOString()
+    }
   });
 });
 
