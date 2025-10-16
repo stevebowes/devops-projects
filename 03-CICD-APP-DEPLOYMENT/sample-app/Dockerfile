@@ -1,7 +1,7 @@
 # ============================================================================
 # Stage 1: Builder - Install dependencies
 # ============================================================================
-FROM node:20-alpine AS builder
+FROM public.ecr.aws/docker/library/node:20-alpine AS builder
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ COPY src/ ./src/
 # ============================================================================
 # Stage 2: Dependencies - Production dependencies only
 # ============================================================================
-FROM node:20-alpine AS dependencies
+FROM public.ecr.aws/docker/library/node:20-alpine AS dependencies
 
 WORKDIR /app
 
