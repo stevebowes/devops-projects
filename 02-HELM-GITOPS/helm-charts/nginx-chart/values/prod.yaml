@@ -7,6 +7,8 @@ image:
 
 service:
   type: LoadBalancer  # Expose via AWS Load Balancer
+  port: 80
+  targetPort: 3000
 
 resources:
   limits:

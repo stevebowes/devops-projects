@@ -40,7 +40,7 @@ securityContext:
 service:
   type: ClusterIP
   port: 80
-  targetPort: 8080
+  targetPort: 3000
 
 ingress:
   enabled: false
@@ -63,8 +63,8 @@ resources:
 
 livenessProbe:
   httpGet:
-    path: /
-    port: http
+    path: /health
+    port: 3000
   initialDelaySeconds: 30
   periodSeconds: 10
   timeoutSeconds: 5
@@ -72,8 +72,8 @@ livenessProbe:
 
 readinessProbe:
   httpGet:
-    path: /
-    port: http
+    path: /health
+    port: 3000
   initialDelaySeconds: 10
   periodSeconds: 5
   timeoutSeconds: 3
@@ -97,26 +97,27 @@ env:
   - name: LOG_LEVEL
     value: "info"
 
-# Additional volumes for nginx read-only filesystem
-volumes:
-  - name: tmp
-    emptyDir: {}
-  - name: nginx-cache
-    emptyDir: {}
-  - name: nginx-tmp
-    emptyDir: {}
-  - name: run
-    emptyDir: {}
-
+# Volume mounts for writable directories
 volumeMounts:
-  - name: tmp
+  - name: cache
     mountPath: /tmp
+  - name: run
+    mountPath: /var/run
   - name: nginx-cache
     mountPath: /var/cache/nginx
   - name: nginx-tmp
     mountPath: /var/tmp
+
+# Volumes
+volumes:
+  - name: cache
+    emptyDir: {}
   - name: run
-    mountPath: /var/run
+    emptyDir: {}
+  - name: nginx-cache
+    emptyDir: {}
+  - name: nginx-tmp
+    emptyDir: {}
 
 nodeSelector: {}
 tolerations: []
