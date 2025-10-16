@@ -1,0 +1,65 @@
+# Development environment overrides for nodejs-chart
+
+replicaCount: 1
+
+image:
+  repository: 570093939044.dkr.ecr.us-east-1.amazonaws.com/eks-cluster-sample-app
+  tag: "latest"
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+
+resources:
+  limits:
+    cpu: "1"
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+# Disable HPA in development
+autoscaling:
+  enabled: false
+
+# Disable PDB in development
+podDisruptionBudget:
+  enabled: false
+
+# Security context for development
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  runAsUser: 1000
+
+# Development environment variables
+env:
+  - name: NODE_ENV
+    value: "development"
+  - name: PORT
+    value: "3000"
+  - name: ENVIRONMENT
+    value: "development"
+
+# Enable secrets for CI/CD app
+secrets:
+  enabled: true
+  name: "app-config"
+
+# ECR image pull secret
+imagePullSecrets:
+  - name: ecr-secret

@@ -1,0 +1,50 @@
+# Development environment overrides for nginx-chart
+
+replicaCount: 1
+
+image:
+  pullPolicy: Always  # Always pull latest dev images
+
+service:
+  type: ClusterIP  # Use port-forward for dev access
+
+resources:
+  limits:
+    cpu: "1"
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+# Disable HPA in development
+autoscaling:
+  enabled: false
+
+# Disable PDB in development
+podDisruptionBudget:
+  enabled: false
+
+# Relaxed security context for development debugging
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65534
+  runAsGroup: 65534
+  fsGroup: 65534
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 65534
+
+# Development environment variables
+env:
+  - name: ENVIRONMENT
+    value: "development"
+  - name: LOG_LEVEL
+    value: "debug"

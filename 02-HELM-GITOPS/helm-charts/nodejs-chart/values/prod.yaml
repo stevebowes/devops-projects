@@ -1,0 +1,84 @@
+# Production environment overrides for nodejs-chart
+
+replicaCount: 1
+
+image:
+  repository: 570093939044.dkr.ecr.us-east-1.amazonaws.com/eks-cluster-sample-app
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 3000
+
+resources:
+  limits:
+    cpu: "1"
+    memory: 2Gi
+  requests:
+    cpu: 500m
+    memory: 1Gi
+
+# Enable HPA in production
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+# Enable PDB in production
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+# Strict security context for production
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  runAsUser: 1000
+
+# Production environment variables
+env:
+  - name: NODE_ENV
+    value: "production"
+  - name: PORT
+    value: "3000"
+  - name: ENVIRONMENT
+    value: "production"
+
+# Enable secrets for CI/CD app
+secrets:
+  enabled: true
+  name: "app-config"
+
+# ECR image pull secret
+imagePullSecrets:
+  - name: ecr-secret
+
+# Anti-affinity to spread pods across nodes
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+          - key: app.kubernetes.io/name
+            operator: In
+            values:
+            - nodejs-chart
+        topologyKey: kubernetes.io/hostname

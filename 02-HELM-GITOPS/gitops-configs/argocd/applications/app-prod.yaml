@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/stevebowes/devops-projects.git
     targetRevision: main
-    path: 02-HELM-GITOPS/helm-charts/app-chart  # Path within mono-repo
+    path: 02-HELM-GITOPS/helm-charts/nginx-chart  # Path within mono-repo
     helm:
       valueFiles:
         - values/prod.yaml

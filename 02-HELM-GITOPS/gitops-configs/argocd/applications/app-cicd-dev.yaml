@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/stevebowes/devops-projects.git
     targetRevision: main
-    path: 02-HELM-GITOPS/helm-charts/app-chart
+    path: 02-HELM-GITOPS/helm-charts/nodejs-chart
     helm:
       valueFiles:
         - values/cicd-dev.yaml  # ← NEW VALUES FILE

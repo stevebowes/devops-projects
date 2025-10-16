@@ -12,9 +12,9 @@ kubernetes_version = "1.32"
 
 # Node Group Configuration
 node_instance_types = ["t3.medium"]
-node_desired_size   = 2
+node_desired_size   = 4
 node_min_size       = 2
-node_max_size       = 4
+node_max_size       = 6
 
 # Enable control plane logging (costs extra ~$0.50/GB)
 enable_cluster_logging = false
