@@ -90,7 +90,7 @@ phases:
         echo "Git push completed with exit code: $?"
         
         # Clean up: Remove token from remote URL after push
-        echo "Cleaning up git remote configuration..."
+        echo "Cleaning up remote configuration..."
         git remote set-url origin https://github.com/stevebowes/devops-projects.git
 
 artifacts:
