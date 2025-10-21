@@ -20,13 +20,15 @@ metadata:
   namespace: development
 spec:
   hard:
-    requests.cpu: "50"
-    requests.memory: 100Gi
-    limits.cpu: "50"
-    limits.memory: 100Gi
-    pods: "100"
-    services: "20"
-    persistentvolumeclaims: "20"
+    requests.cpu: "4"        # Reduced from 50 to align with cluster capacity
+    requests.memory: "8Gi"   # Reduced from 100Gi to align with cluster capacity
+    limits.cpu: "6"          # Reduced from 50 to align with cluster capacity
+    limits.memory: "12Gi"    # Reduced from 100Gi to align with cluster capacity
+    pods: "30"               # Reduced from 100 to be more realistic
+    services: "10"           # Reduced from 20 to be more realistic
+    persistentvolumeclaims: "10"  # Reduced from 20 to be more realistic
+    secrets: "20"            # Added reasonable limit
+    configmaps: "20"         # Added reasonable limit
 ---
 apiVersion: v1
 kind: LimitRange
@@ -36,21 +38,21 @@ metadata:
 spec:
   limits:
   - max:
-      cpu: "8"
-      memory: 16Gi
+      cpu: "2"        # Reduced from 8 to be more realistic for t3.medium
+      memory: 4Gi     # Reduced from 16Gi to be more realistic
     min:
       cpu: 100m
       memory: 128Mi
     default:
-      cpu: "1"
-      memory: 1Gi
+      cpu: "500m"     # Reduced from 1 to be more realistic
+      memory: 1Gi     # Kept same as it's reasonable
     defaultRequest:
-      cpu: 500m
-      memory: 512Mi
+      cpu: "250m"     # Reduced from 500m to be more realistic
+      memory: 512Mi   # Kept same as it's reasonable
     type: Container
   - max:
-      cpu: "16"
-      memory: 32Gi
+      cpu: "4"        # Reduced from 16 to be more realistic for t3.medium
+      memory: 8Gi     # Reduced from 32Gi to be more realistic
     min:
       cpu: 100m
       memory: 128Mi

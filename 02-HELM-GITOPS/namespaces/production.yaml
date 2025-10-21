@@ -20,13 +20,15 @@ metadata:
   namespace: production
 spec:
   hard:
-    requests.cpu: "200"
-    requests.memory: 400Gi
-    limits.cpu: "200"
-    limits.memory: 400Gi
-    pods: "300"
-    services: "100"
-    persistentvolumeclaims: "100"
+    requests.cpu: "6"        # Reduced from 200 to align with 4x t3.medium capacity
+    requests.memory: "12Gi"  # Reduced from 400Gi to align with cluster capacity
+    limits.cpu: "8"          # Reduced from 200 to align with cluster capacity
+    limits.memory: "16Gi"    # Reduced from 400Gi to align with cluster capacity
+    pods: "50"               # Reduced from 300 to be more realistic
+    services: "20"           # Reduced from 100 to be more realistic
+    persistentvolumeclaims: "20"  # Reduced from 100 to be more realistic
+    secrets: "50"            # Added reasonable limit
+    configmaps: "50"         # Added reasonable limit
 ---
 apiVersion: v1
 kind: LimitRange
@@ -36,21 +38,21 @@ metadata:
 spec:
   limits:
   - max:
-      cpu: "16"
-      memory: 32Gi
+      cpu: "2"        # Reduced from 16 to be more realistic for t3.medium
+      memory: 4Gi     # Reduced from 32Gi to be more realistic
     min:
       cpu: 100m
       memory: 128Mi
     default:
-      cpu: "2"
-      memory: 2Gi
+      cpu: "500m"     # Reduced from 2 to be more realistic
+      memory: 1Gi     # Reduced from 2Gi to be more realistic
     defaultRequest:
-      cpu: "1"
-      memory: 1Gi
+      cpu: "250m"     # Reduced from 1 to be more realistic
+      memory: 512Mi   # Reduced from 1Gi to be more realistic
     type: Container
   - max:
-      cpu: "32"
-      memory: 64Gi
+      cpu: "4"        # Reduced from 32 to be more realistic for t3.medium
+      memory: 8Gi     # Reduced from 64Gi to be more realistic
     min:
       cpu: 100m
       memory: 128Mi
@@ -97,3 +99,23 @@ spec:
   ingress:
   - from:
     - podSelector: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-prometheus-scraping
+  namespace: production
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: app-chart  # Match your app labels
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: monitoring
+    ports:
+    - protocol: TCP
+      port: 3000  # Your app port
+    - protocol: TCP
+      port: 8080  # Metrics port if different

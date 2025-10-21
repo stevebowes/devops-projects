@@ -112,3 +112,22 @@ output "external_secrets_role_name" {
   description = "Name of the IAM role for External Secrets Operator"
   value       = module.external_secrets_irsa.iam_role_name
 }
+
+# ===================================
+# AWS Load Balancer Controller IAM Outputs
+# ===================================
+
+output "aws_load_balancer_controller_policy_arn" {
+  description = "ARN of the IAM policy for AWS Load Balancer Controller"
+  value       = aws_iam_policy.aws_load_balancer_controller.arn
+}
+
+output "aws_load_balancer_controller_role_arn" {
+  description = "ARN of the IAM role for AWS Load Balancer Controller (IRSA)"
+  value       = module.aws_load_balancer_controller_irsa.iam_role_arn
+}
+
+output "aws_load_balancer_controller_role_name" {
+  description = "Name of the IAM role for AWS Load Balancer Controller"
+  value       = module.aws_load_balancer_controller_irsa.iam_role_name
+}
