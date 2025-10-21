@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   repository: 570093939044.dkr.ecr.us-east-1.amazonaws.com/eks-cluster-sample-app
-  tag: "latest"
+  tag: "3b188fa"
   pullPolicy: Always
 
 service:
