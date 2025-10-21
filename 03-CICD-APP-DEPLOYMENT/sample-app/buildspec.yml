@@ -63,12 +63,21 @@ phases:
         # Update CI/CD development values (nodejs-chart)
         sed -i "s|tag: \".*\"|tag: \"$IMAGE_TAG\"|g" "$HELM_VALUES_FILE"
         
-        # Update CI/CD production values (optional - for auto-deploy to prod)
-        # PROD_VALUES_FILE="$CODEBUILD_SRC_DIR/02-HELM-GITOPS/helm-charts/nodejs-chart/values/prod.yaml"
-        # sed -i "s|tag: \".*\"|tag: \"$IMAGE_TAG\"|g" "$PROD_VALUES_FILE"
+        # Update CI/CD production values (auto-deploy to prod)
+        PROD_VALUES_FILE="$CODEBUILD_SRC_DIR/02-HELM-GITOPS/helm-charts/nodejs-chart/values/prod.yaml"
+        if [ -f "$PROD_VALUES_FILE" ]; then
+          sed -i "s|tag: \".*\"|tag: \"$IMAGE_TAG\"|g" "$PROD_VALUES_FILE"
+          echo "Production values also updated with tag: $IMAGE_TAG"
+        else
+          echo "Warning: Production values file not found at $PROD_VALUES_FILE"
+        fi
         
         echo "Helm values updated with tag: $IMAGE_TAG"
         echo "Updated file: $HELM_VALUES_FILE"
+        
+        # Fix detached HEAD issue by creating/checking out main branch
+        echo "Checking out main branch to avoid detached HEAD..."
+        git checkout -B main origin/main
         
         # Commit and push the updated values to trigger ArgoCD sync
         git config --global user.email "codebuild@example.com"
