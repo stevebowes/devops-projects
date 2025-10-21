@@ -12,7 +12,12 @@ phases:
         apt-get update
         apt-get install -y trivy
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - IMAGE_TAG=${IMAGE_TAG:-$COMMIT_HASH}
+      - |
+        if [ "$IMAGE_TAG" = "COMMIT_HASH" ]; then
+          IMAGE_TAG=$COMMIT_HASH
+        else
+          IMAGE_TAG=${IMAGE_TAG:-$COMMIT_HASH}
+        fi
       - echo Build started on `date`
       - echo Building Docker image with tag $IMAGE_TAG...
 
