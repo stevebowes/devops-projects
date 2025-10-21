@@ -69,8 +69,12 @@ phases:
         git commit -m "Update CI/CD image tag to $IMAGE_TAG for app-cicd-dev deployment"
         
         # Configure git to use token for authentication
-        git remote set-url origin https://$GITHUB_TOKEN@github.com/stevebowes/devops-projects.git
+        # CodeBuild automatically resolves SECRETS_MANAGER ARN to the actual token value
+        git config --global credential.helper store
+        echo "https://$GITHUB_TOKEN@github.com" > ~/.git-credentials
+        echo "Attempting git push..."
         git push origin main
+        echo "Git push completed with exit code: $?"
 
 artifacts:
   files:
