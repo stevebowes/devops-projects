@@ -62,6 +62,9 @@ phases:
         git config --global user.name "AWS CodeBuild"
         git add 02-HELM-GITOPS/helm-charts/nodejs-chart/values/dev.yaml
         git commit -m "Update CI/CD image tag to $IMAGE_TAG for app-cicd-dev deployment"
+        
+        # Configure git to use token for authentication
+        git remote set-url origin https://$GITHUB_TOKEN@github.com/stevebowes/devops-projects.git
         git push origin main
 
 artifacts:

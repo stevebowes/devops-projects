@@ -73,6 +73,15 @@ resource "aws_iam_role_policy" "codebuild_ecr_s3" {
           "${module.codebuild_cache_bucket.s3_bucket_arn}/*"
         ]
       },
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue"
+        ]
+        Resource = [
+          aws_secretsmanager_secret.github_token.arn
+        ]
+      },
     ]
   })
 }

@@ -63,8 +63,14 @@ resource "aws_codebuild_project" "sample_app" {
 
     environment_variable {
       name  = "IMAGE_TAG"
-      value = "latest"
+      value = "COMMIT_HASH"
       type  = "PLAINTEXT"
+    }
+
+    environment_variable {
+      name  = "GITHUB_TOKEN"
+      value = aws_secretsmanager_secret.github_token.arn
+      type  = "SECRETS_MANAGER"
     }
   }
 
@@ -101,6 +107,28 @@ resource "aws_codebuild_project" "sample_app" {
     aws_iam_role.codebuild_role,
     aws_cloudwatch_log_group.codebuild_sample_app
   ]
+}
+
+###############################################################################
+# GitHub Token in Secrets Manager
+###############################################################################
+
+resource "aws_secretsmanager_secret" "github_token" {
+  name        = "${local.cluster_name}-github-token"
+  description = "GitHub Personal Access Token for CodeBuild"
+
+  tags = merge(
+    var.tags,
+    {
+      Name    = "${local.cluster_name}-github-token"
+      Project = "project-3-cicd"
+    }
+  )
+}
+
+resource "aws_secretsmanager_secret_version" "github_token" {
+  secret_id     = aws_secretsmanager_secret.github_token.id
+  secret_string = var.github_token
 }
 
 ###############################################################################
