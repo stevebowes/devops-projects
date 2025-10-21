@@ -29,7 +29,7 @@ phases:
       - echo Build completed on `date`
       - echo Scanning image for vulnerabilities...
       - |
-        trivy image --severity HIGH,CRITICAL --exit-code 1 $ECR_REPOSITORY_URI:$IMAGE_TAG || {
+        trivy image --severity HIGH,CRITICAL --exit-code 1 $ECR_REPOSITORY_URI:latest || {
           echo "Security scan found HIGH or CRITICAL vulnerabilities!"
           echo "Build will fail. Review vulnerabilities and fix before deploying."
           exit 1
