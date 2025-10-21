@@ -51,21 +51,29 @@ phases:
       - echo ""
       - echo "Updating Helm values with new image tag..."
       - |
-        # Navigate back to repo root for git operations
-        cd ../..
+        # Use absolute paths from CODEBUILD_SRC_DIR for reliability
+        HELM_VALUES_FILE="$CODEBUILD_SRC_DIR/02-HELM-GITOPS/helm-charts/nodejs-chart/values/dev.yaml"
+        
+        # Verify file exists before updating
+        if [ ! -f "$HELM_VALUES_FILE" ]; then
+          echo "Error: Helm values file not found at $HELM_VALUES_FILE"
+          exit 1
+        fi
         
         # Update CI/CD development values (nodejs-chart)
-        sed -i "s|tag: \".*\"|tag: \"$IMAGE_TAG\"|g" 02-HELM-GITOPS/helm-charts/nodejs-chart/values/dev.yaml
+        sed -i "s|tag: \".*\"|tag: \"$IMAGE_TAG\"|g" "$HELM_VALUES_FILE"
         
         # Update CI/CD production values (optional - for auto-deploy to prod)
-        # sed -i "s|tag: \".*\"|tag: \"$IMAGE_TAG\"|g" 02-HELM-GITOPS/helm-charts/nodejs-chart/values/prod.yaml
+        # PROD_VALUES_FILE="$CODEBUILD_SRC_DIR/02-HELM-GITOPS/helm-charts/nodejs-chart/values/prod.yaml"
+        # sed -i "s|tag: \".*\"|tag: \"$IMAGE_TAG\"|g" "$PROD_VALUES_FILE"
         
         echo "Helm values updated with tag: $IMAGE_TAG"
+        echo "Updated file: $HELM_VALUES_FILE"
         
         # Commit and push the updated values to trigger ArgoCD sync
         git config --global user.email "codebuild@example.com"
         git config --global user.name "AWS CodeBuild"
-        git add 02-HELM-GITOPS/helm-charts/nodejs-chart/values/dev.yaml
+        git add "$HELM_VALUES_FILE"
         git commit -m "Update CI/CD image tag to $IMAGE_TAG for app-cicd-dev deployment"
         
         # Configure git to use token for authentication
