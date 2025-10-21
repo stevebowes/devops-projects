@@ -35,14 +35,12 @@ phases:
         }
       - echo Security scan completed!
       - echo Pushing Docker images to ECR...
-      - docker push $ECR_REPOSITORY_URI:latest
       - docker push $ECR_REPOSITORY_URI:$IMAGE_TAG
       - docker push $ECR_REPOSITORY_URI:$COMMIT_HASH
       - echo Docker images pushed successfully
       - echo Writing image definitions file...
       - printf '[{"name":"sample-app","imageUri":"%s"}]' $ECR_REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - echo "Build complete! Image pushed with tags:"
-      - echo "  - latest"
       - echo "  - $IMAGE_TAG"
       - echo "  - $COMMIT_HASH"
       - echo ""
