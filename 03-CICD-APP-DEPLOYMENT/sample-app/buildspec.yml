@@ -48,6 +48,9 @@ phases:
       - echo ""
       - echo "Updating Helm values with new image tag..."
       - |
+        # Navigate back to repo root for git operations
+        cd ../..
+        
         # Update CI/CD development values (nodejs-chart)
         sed -i "s|tag: \".*\"|tag: \"$IMAGE_TAG\"|g" 02-HELM-GITOPS/helm-charts/nodejs-chart/values/dev.yaml
         
