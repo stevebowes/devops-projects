@@ -78,11 +78,16 @@ phases:
         
         # Configure git to use token for authentication
         # CodeBuild automatically resolves SECRETS_MANAGER ARN to the actual token value
-        git config --global credential.helper store
-        echo "https://$GITHUB_TOKEN@github.com" > ~/.git-credentials
+        echo "Configuring git remote with token authentication..."
+        # Use a temporary approach to avoid token exposure in logs
+        git remote set-url origin https://$GITHUB_TOKEN@github.com/stevebowes/devops-projects.git 2>/dev/null
         echo "Attempting git push..."
         git push origin main
         echo "Git push completed with exit code: $?"
+        
+        # Clean up: Remove token from remote URL after push
+        echo "Cleaning up git remote configuration..."
+        git remote set-url origin https://github.com/stevebowes/devops-projects.git
 
 artifacts:
   files:
