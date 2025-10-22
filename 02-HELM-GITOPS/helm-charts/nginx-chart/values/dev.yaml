@@ -1,6 +1,6 @@
 # Development environment overrides for nginx-chart
 
-replicaCount: 2
+replicaCount: 1
 
 image:
   pullPolicy: Always  # Always pull latest dev images
