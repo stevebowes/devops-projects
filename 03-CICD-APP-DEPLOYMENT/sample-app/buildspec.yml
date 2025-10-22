@@ -63,9 +63,14 @@ phases:
         # Update CI/CD development values (nodejs-chart)
         sed -i "s|tag: \".*\"|tag: \"$IMAGE_TAG\"|g" "$HELM_VALUES_FILE"
         
-        # Update CI/CD production values (optional - for auto-deploy to prod)
-        # PROD_VALUES_FILE="$CODEBUILD_SRC_DIR/02-HELM-GITOPS/helm-charts/nodejs-chart/values/prod.yaml"
-        # sed -i "s|tag: \".*\"|tag: \"$IMAGE_TAG\"|g" "$PROD_VALUES_FILE"
+        # Update CI/CD production values (nodejs-chart)
+        PROD_VALUES_FILE="$CODEBUILD_SRC_DIR/02-HELM-GITOPS/helm-charts/nodejs-chart/values/prod.yaml"
+        if [ -f "$PROD_VALUES_FILE" ]; then
+          sed -i "s|tag: \".*\"|tag: \"$IMAGE_TAG\"|g" "$PROD_VALUES_FILE"
+          echo "Updated production values file: $PROD_VALUES_FILE"
+        else
+          echo "Warning: Production values file not found at $PROD_VALUES_FILE"
+        fi
         
         echo "Helm values updated with tag: $IMAGE_TAG"
         echo "Updated file: $HELM_VALUES_FILE"
@@ -78,7 +83,10 @@ phases:
         git config --global user.email "codebuild@example.com"
         git config --global user.name "AWS CodeBuild"
         git add "$HELM_VALUES_FILE"
-        git commit -m "Update CI/CD image tag to $IMAGE_TAG for app-cicd-dev deployment"
+        if [ -f "$PROD_VALUES_FILE" ]; then
+          git add "$PROD_VALUES_FILE"
+        fi
+        git commit -m "Update CI/CD image tag to $IMAGE_TAG for dev and prod deployments"
         
         # Configure git to use token for authentication
         # CodeBuild automatically resolves SECRETS_MANAGER ARN to the actual token value
